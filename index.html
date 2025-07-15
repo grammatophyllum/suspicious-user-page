@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Search</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 0;
+      background: #f9f9f9;
+    }
+    header {
+      background: #4a90e2;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .search-wrapper label {
+      margin-right: 0.5rem;
+      font-weight: 600;
+    }
+    .search-wrapper input {
+      flex: 1;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #query {
+      margin: 0 0 1rem;
+      font-style: italic;
+      color: #333;
+    }
+    ul.user-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    ul.user-list li {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    ul.user-list li:last-child {
+      border-bottom: none;
+    }
+    .username { font-weight: 500; }
+    .email { color: #666; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>User Search</h1>
+  </header>
+
+  <div class="container">
+    <div class="search-wrapper">
+      <label for="searchInput">Search:</label>
+      <input type="text" id="searchInput" placeholder="Type a name…">
+    </div>
+
+    <p id="query">Query: </p>
+
+    <ul class="user-list" id="userList"></ul>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const queryDisplay = document.getElementById('query');
+    const userList = document.getElementById('userList');
+
+    // Users
+    const users = [
+      { name: "Tan Wei Ming", email: "weiming.tan@gmail.com" },
+      { name: "Lim Hui Yi", email: "huizzz.lim@gmail.com" },
+      { name: "Ng Jun Kai", email: "junkai_sgboi@gmail.com" },
+      { name: "Lee Mei Ling", email: "mei.ling.loves.milo@gmail.com" },
+      { name: "Chong Zi Xuan", email: "zixuan.noodlelover@gmail.com" },
+      { name: "Goh Yi Xuan", email: "yixuan_kancheong@gmail.com" },
+      { name: "Toh Jia Hao", email: "jiahao.dabao@gmail.com" },
+      { name: "Wong Pei Wen", email: "peiwenzzz@gmail.com" },
+      { name: "Tan Li Ting", email: "litty.liting@gmail.com" },
+      { name: "Chua Hong Wei", email: "hongwei.char.kway.teow@gmail.com" },
+      { name: "Koh Wen Jie", email: "wenjiedontplayplay@gmail.com" },
+      { name: "Yap Zhi Hao", email: "zhihao.uncle97@gmail.com" },
+      { name: "Liew Xiu Ying", email: "xiuying.tigerbalm@gmail.com" },
+      { name: "Teo Yu Heng", email: "yuheng.mahjongpro@gmail.com" },
+      { name: "Chew Jing Yi", email: "jingyi.bubbletea@gmail.com" }
+    ];
+
+    // Search function
+    function renderUsers(filter = "") {
+      userList.innerHTML = "";
+      users.forEach(user => {
+        if ((user.name + " " + user.email).toLowerCase().includes(filter.toLowerCase())) {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span class="username">${user.name}</span>
+            <span class="email">${user.email}</span>
+          `;
+          userList.appendChild(li);
+        }
+      });
+    }
+
+    // Vulnerability over here
+    function updateQueryDisplay(q) {
+      queryDisplay.innerHTML = "Query: " + q; // omg
+    }
+
+    // Update the URL ?q=
+    function updateURL(q) {
+      const url = new URL(window.location);
+      if (q) url.searchParams.set("q", q);
+      else url.searchParams.delete("q");
+      window.history.replaceState({}, "", url);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const initialQ = new URLSearchParams(window.location.search).get("q") || "";
+      searchInput.value = initialQ;
+      renderUsers(initialQ);
+      updateQueryDisplay(initialQ);
+    });
+
+    searchInput.addEventListener("input", e => {
+      const q = e.target.value;
+      renderUsers(q);
+      updateQueryDisplay(q);
+      updateURL(q);
+    });
+  </script>
+
+</body>
+</html>
